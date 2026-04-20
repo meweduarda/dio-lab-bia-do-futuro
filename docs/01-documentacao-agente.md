@@ -46,7 +46,7 @@ Gentil e acolhedor, sem julgamentos; Orientador e claro, evitando jargões técn
 
 ### Diagrama
 
-flowchart TD
+## flowchart TD
     A[Cliente Empresário/PJ] -->|Mensagem (texto/voz)| B[Interface - Chatbot em Streamlit/ERP]
     B --> C[LLM - GPT-4 via API]
     C --> D[Base de Conhecimento Fiscal/Contábil - JSON/CSV + APIs Receita Federal]
