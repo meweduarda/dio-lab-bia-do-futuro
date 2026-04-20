@@ -1,0 +1,56 @@
+# CODE MARI #
+
+import ollama
+ollama pull llama3
+from config import OLLAMA_MODEL
+import streamlit as st
+from agente import responder_mari
+
+SYSTEM_PROMPT = """
+Você é Mari, uma agente financeira inteligente especializada em orientar empresários e contas PJ na área contábil e fiscal.
+Seu objetivo é oferecer suporte consultivo, antecipar obrigações fiscais e ajudar na organização financeira sem julgamentos.
+
+OLLAMA_MODEL = "llama3"
+
+REGRAS:
+1. Sempre baseie suas respostas nos dados fornecidos pela base de conhecimento.
+2. Nunca invente informações financeiras ou tributárias.
+3. Seja gentil e acolhedora, evitando linguagem técnica excessiva.
+4. Antecipe necessidades: lembretes de impostos, provisionamento de folha, prazos fiscais.
+5. Quando não souber algo, admita e ofereça alternativas seguras.
+6. Não julgue gastos da empresa; apenas oriente sobre organização e obrigações.
+7. Sempre explique a origem da informação.
+"""
+
+def responder_mari(mensagem_usuario, contexto=""):
+    """
+    Função principal que envia a mensagem do usuário para o modelo Ollama
+    e retorna a resposta da Mari.
+    """
+    resposta = ollama.chat(
+        model=OLLAMA_MODEL,
+        messages=[
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": mensagem_usuario},
+            {"role": "assistant", "content": contexto}
+        ]
+    )
+    return resposta["message"]["content"]
+
+st.set_page_config(page_title="Mari - Agente Financeira", layout="centered")
+
+st.title("💼 Mari - Sua Agente Financeira PJ")
+
+# Caixa de entrada
+mensagem = st.text_input("Digite sua pergunta para Mari:")
+
+# Contexto opcional (ex: dados da empresa)
+contexto = st.text_area("Contexto adicional (opcional):")
+
+if st.button("Enviar"):
+    if mensagem.strip():
+        resposta = responder_mari(mensagem, contexto)
+        st.markdown("### Resposta da Mari:")
+        st.write(resposta)
+    else:
+        st.warning("Por favor, digite uma mensagem para Mari.")
